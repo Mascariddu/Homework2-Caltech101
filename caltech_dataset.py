@@ -80,9 +80,9 @@ class Caltech(VisionDataset):
     
     def __split_indices__(self):
         
-        splitter = StratifiedShuffleSplit(1,test_size=.2)
+        splitter_ = StratifiedShuffleSplit(1,test_size=.2)
         
-        for x, y in sss.split(self.data.values()[0],self.data.values()[1]):
+        for x, y in splitter_.split(self.data.values()[0],self.data.values()[1]):
             train_indexes = x
             val_indexes = y 
         
