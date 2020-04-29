@@ -6,6 +6,8 @@ import os
 import os.path
 import sys
 
+from sklearn.model_selection import StratifiedShuffleSplit
+
 
 def pil_loader(path):
     # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
@@ -29,6 +31,26 @@ class Caltech(VisionDataset):
           through the index
         - Labels should start from 0, so for Caltech you will have lables 0...100 (excluding the background class) 
         '''
+        
+        self.data = {}
+        class = {}
+        self.count = 0
+        class_count = 0
+        
+        self.files = os.listdir(root)
+        self.files.remove('BACKGROUND_Google')
+        images = set(np.loadtxt('Caltech101/'+split+'.txt',dtype=str))
+        
+        for file in self.files:
+            
+            class[file] = class_count
+            class_count++
+            imgs = os.listdir(root+"/"+file)
+            
+            for image in imgs:
+                if file+"/"image in images:
+                    self.data[self.count] = (pil_loader(root+"/"+file+"/"+image), class[file])
+                    self.count++
 
     def __getitem__(self, index):
         '''
@@ -40,7 +62,7 @@ class Caltech(VisionDataset):
             tuple: (sample, target) where target is class_index of the target class.
         '''
 
-        image, label = ... # Provide a way to access image and label via index
+        image, label = self.data[index] # Provide a way to access image and label via index
                            # Image should be a PIL Image
                            # label can be int
 
@@ -55,4 +77,15 @@ class Caltech(VisionDataset):
         The __len__ method returns the length of the dataset
         It is mandatory, as this is used by several other components
         '''
-        return len(split)
+        return self.count
+    
+    def __split_indices__(self):
+        
+        splitter = StratifiedShuffleSplit(1,test_size=.2)
+        
+        for x, y in sss.split(self.data.values()[0],self.data.values()[1]):
+            train_indexes = x
+            val_indexes = y 
+        
+        return train_indexes, val_indexes
+        
