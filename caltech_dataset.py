@@ -14,7 +14,7 @@ def pil_loader(path):
     with open(path, 'rb') as f:
         img = Image.open(f)
         return img.convert('RGB')
-
+    
 
 class Caltech(VisionDataset):
     def __init__(self, root, split='train', transform=None, target_transform=None):
