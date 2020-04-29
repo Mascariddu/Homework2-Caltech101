@@ -39,7 +39,6 @@ class Caltech(VisionDataset):
         
         self.files = os.listdir(root)
         self.files.remove('BACKGROUND_Google')
-        images = set(np.loadtxt('Caltech101/'+split+'.txt',dtype=str))
         
         for file in self.files:
             
@@ -48,7 +47,7 @@ class Caltech(VisionDataset):
             imgs = os.listdir(root+"/"+file)
             
             for image in imgs:
-                if file+"/"image in images:
+                if file+"/"image in set(np.loadtxt('Caltech101/'+split+'.txt',dtype=str)):
                     self.data[self.count] = (pil_loader(root+"/"+file+"/"+image), class_[file])
                     self.count++
 
