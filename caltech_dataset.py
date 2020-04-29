@@ -33,7 +33,7 @@ class Caltech(VisionDataset):
         '''
         
         self.data = {}
-        class = {}
+        class_ = {}
         self.count = 0
         class_count = 0
         
@@ -43,13 +43,13 @@ class Caltech(VisionDataset):
         
         for file in self.files:
             
-            class[file] = class_count
+            class_[file] = class_count
             class_count++
             imgs = os.listdir(root+"/"+file)
             
             for image in imgs:
                 if file+"/"image in images:
-                    self.data[self.count] = (pil_loader(root+"/"+file+"/"+image), class[file])
+                    self.data[self.count] = (pil_loader(root+"/"+file+"/"+image), class_[file])
                     self.count++
 
     def __getitem__(self, index):
