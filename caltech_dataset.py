@@ -6,6 +6,8 @@ import os
 import os.path
 import sys
 
+import numpy as np
+
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
@@ -38,6 +40,9 @@ class Caltech(VisionDataset):
         self.count = 0
         class_count = 0
         
+        self.images_ = []
+        self.labels_ = []
+        
         self.files = os.listdir(root)
         self.files.remove('BACKGROUND_Google')
         
@@ -49,8 +54,13 @@ class Caltech(VisionDataset):
             
             for image in imgs:
                 if file+"/"+image in set(np.loadtxt('Caltech101/'+split+'.txt',dtype=str)):
-                    self.data[self.count] = (pil_loader(root+"/"+file+"/"+image), class_[file])
+                    
+                    data = pil_loader(root+"/"+file+"/"+image)
+                    label = class_[file]
+                    self.data[self.count] = (data, label)
                     self.count += 1
+                    self.images_.append(data)
+                    self.labels_.append(label)
 
     def __getitem__(self, index):
         '''
@@ -83,7 +93,7 @@ class Caltech(VisionDataset):
         
         splitter_ = StratifiedShuffleSplit(1,test_size=.2)
         
-        for x, y in splitter_.split(self.data.values()[0],self.data.values()[1]):
+        for x, y in splitter_.split(self.images_,self.labels_):
             train_indexes = x
             val_indexes = y 
         
