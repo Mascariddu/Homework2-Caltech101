@@ -89,9 +89,9 @@ class Caltech(VisionDataset):
         '''
         return self.count
     
-    def __split_indices__(self):
+    def __split_indices__(self,size):
         
-        splitter_ = StratifiedShuffleSplit(1,test_size=.2)
+        splitter_ = StratifiedShuffleSplit(1,test_size=size)
         
         for x, y in splitter_.split(self.images_,self.labels_):
             train_indexes = x
